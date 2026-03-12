@@ -11,12 +11,6 @@
                     decoration-danger="execution &lt; dedication"
                     decoration-success="execution &gt; dedication"
                 />
-                <field
-                    name="dedication"
-                    widget="progressbar"
-                    decoration-danger="execution &lt; dedication"
-                    decoration-success="execution &gt; dedication"
-                />
             </xpath>
         </field>
     </record>
