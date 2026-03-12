@@ -7,16 +7,15 @@ class ProjectMilestone(models.Model):
     execution = fields.Integer(compute="_compute_execution")
     dedication = fields.Integer(compute="_compute_dedication")
 
-    @api.depends("task_ids")
+    @api.depends("task_ids", "task_ids.state")
     def _compute_execution(self):
         for milestone in self:
-            executed_tasks = milestone.task_ids.filtered("stage_id.fold")
-
-            total_allocated_hours = sum(milestone.task_ids.mapped("allocated_hours"))
-            total_executed_hours = sum(executed_tasks.mapped("allocated_hours"))
-
-            if total_executed_hours and total_allocated_hours:
-                milestone.execution = total_executed_hours * 100 / total_allocated_hours
+            total_tasks = len(milestone.task_ids)
+            executed_tasks = milestone.task_ids.filtered(
+                lambda t: t.state in ('1_done', '1_canceled')
+            )
+            if total_tasks:
+                milestone.execution = len(executed_tasks) * 100 // total_tasks
             else:
                 milestone.execution = 0
 
